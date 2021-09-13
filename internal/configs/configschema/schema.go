@@ -34,13 +34,12 @@ type Block struct {
 
 	Deprecated bool
 
-	// Capability is taken from the provider schema Capability field, and can
-	// indicate the expected behavior of the associated resource. This is only
-	// used on the top level Block for an entire resource.
-	// Valid values are:
-	// 0: Default behavior for legacy provider resources.
-	// 1: No SchemaConfigModeAttr blocks are present in this resource.
-	Capability int64
+	// NestedTypes is set by the provider to indicate that this resource uses
+	// the new nested attribute type system and will not need not need the
+	// legacy block to attr fixup, so we can skip that entirely during
+	// decoding. This is only used ion the top level Block for and entire
+	// resource.
+	NestedTypes bool
 }
 
 // Attribute represents a configuration attribute, within a block.

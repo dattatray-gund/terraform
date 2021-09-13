@@ -10,7 +10,7 @@ terraform {
 
 resource "simple_resource" "test-proto6" {
   // The schema capability setting of this provider will not allow
-  // SchemaConfigModeAttr fixups.
+  // SchemaConfigModeAttr fixups, so this should produce an error.
   list {
     foo = "bar"
   }

@@ -34,7 +34,7 @@ func Provider() providers.Interface {
 					})),
 				},
 			},
-			Capability: 1,
+			NestedTypes: true,
 		},
 	}
 
