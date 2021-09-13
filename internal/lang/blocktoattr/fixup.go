@@ -20,12 +20,21 @@ import (
 // subsequently decoded, so while FixUpBlockAttrs always succeeds, the eventual
 // decode of the body might not, if the content of the body is so ambiguous
 // that there's no safe way to map it to the schema.
+//
+// If the schema has Capability > 0 defined, then no fixup will be done and the
+// original body will be returned unchanged.
 func FixUpBlockAttrs(body hcl.Body, schema *configschema.Block) hcl.Body {
 	// The schema should never be nil, but in practice it seems to be sometimes
 	// in the presence of poorly-configured test mocks, so we'll be robust
 	// by synthesizing an empty one.
 	if schema == nil {
 		schema = &configschema.Block{}
+	}
+
+	// Only legacy resources with a Capability of 0 could require mapping
+	// blocks to attributes.
+	if schema.Capability > 0 {
+		return body
 	}
 
 	return &fixupBody{
