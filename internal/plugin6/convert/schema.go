@@ -99,7 +99,9 @@ func ProtoToProviderSchema(s *proto.Schema) providers.Schema {
 	}
 
 	// insert the schema capability into the top level block
-	ps.Block.Capability = s.Capability
+	if s.Capabilities != nil {
+		ps.Block.NestedTypes = s.Capabilities.NestedTypes
+	}
 	return ps
 }
 

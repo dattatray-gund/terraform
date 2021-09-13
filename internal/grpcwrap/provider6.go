@@ -48,17 +48,21 @@ func (p *provider6) GetProviderSchema(_ context.Context, req *tfplugin6.GetProvi
 
 	for typ, res := range p.schema.ResourceTypes {
 		resp.ResourceSchemas[typ] = &tfplugin6.Schema{
-			Version:    res.Version,
-			Block:      convert.ConfigSchemaToProto(res.Block),
-			Capability: res.Block.Capability,
+			Version: res.Version,
+			Block:   convert.ConfigSchemaToProto(res.Block),
+			Capabilities: &tfplugin6.Schema_Capabilities{
+				NestedTypes: res.Block.NestedTypes,
+			},
 		}
 	}
 
 	for typ, dat := range p.schema.DataSources {
 		resp.DataSourceSchemas[typ] = &tfplugin6.Schema{
-			Version:    dat.Version,
-			Block:      convert.ConfigSchemaToProto(dat.Block),
-			Capability: dat.Block.Capability,
+			Version: dat.Version,
+			Block:   convert.ConfigSchemaToProto(dat.Block),
+			Capabilities: &tfplugin6.Schema_Capabilities{
+				NestedTypes: dat.Block.NestedTypes,
+			},
 		}
 	}
 

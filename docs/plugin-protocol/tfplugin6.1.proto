@@ -132,6 +132,12 @@ message Schema {
         int64 max_items = 5;
     }
 
+    message Capabilities {
+        // Enable the use of nested object types, implicitly disabling the use
+        // of blocks-as-attributes.
+        bool nested_types = 1;
+    }
+
     // The version of the schema.
     // Schemas are versioned, so that providers can upgrade a saved resource
     // state when the schema is changed. 
@@ -140,16 +146,12 @@ message Schema {
     // Block is the top level configuration block for this schema.
     Block block = 2;
 
-    // Capability allows providers to communicate extra information regarding
+    // Capabilities allows providers to communicate extra information regarding
     // the behavior of individual resources. This is used to indicate
     // forward-compatible changes which cannot be directly tested by the plugin
     // client, allowing protocol5 resources to be muxed with strict protocol6
     // resources from the same provider.
-    //
-    // Current valid values are
-    // 0: Legacy protocol5 compatible resource
-    // 1: Protocol6 resource which will not use SchemaConfigModeAttr
-    int64 capability = 3;
+    Capabilities capabilities = 3;
 }
 
 service Provider {
