@@ -414,7 +414,7 @@ container {
 						})),
 					},
 				},
-				Capability: 1,
+				NestedTypes: true,
 			},
 			want: cty.ObjectVal(map[string]cty.Value{
 				"container": cty.ListVal([]cty.Value{

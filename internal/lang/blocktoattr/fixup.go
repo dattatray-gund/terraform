@@ -21,7 +21,7 @@ import (
 // decode of the body might not, if the content of the body is so ambiguous
 // that there's no safe way to map it to the schema.
 //
-// If the schema has Capability > 0 defined, then no fixup will be done and the
+// If schema.NestedTypes is true, then no fixup will be done and the
 // original body will be returned unchanged.
 func FixUpBlockAttrs(body hcl.Body, schema *configschema.Block) hcl.Body {
 	// The schema should never be nil, but in practice it seems to be sometimes
@@ -31,9 +31,8 @@ func FixUpBlockAttrs(body hcl.Body, schema *configschema.Block) hcl.Body {
 		schema = &configschema.Block{}
 	}
 
-	// Only legacy resources with a Capability of 0 could require mapping
-	// blocks to attributes.
-	if schema.Capability > 0 {
+	// New resources will have this set to disable the legacy behavior.
+	if schema.NestedTypes {
 		return body
 	}
 
