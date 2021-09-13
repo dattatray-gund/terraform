@@ -31,6 +31,7 @@ type Plan struct {
 
 	VariableValues    map[string]DynamicValue
 	Changes           *Changes
+	DriftChanges      *Changes
 	TargetAddrs       []addrs.Targetable
 	ForceReplaceAddrs []addrs.AbsResourceInstance
 	ProviderSHA256s   map[string][]byte

@@ -12,25 +12,29 @@ func _() {
 	_ = x[ResourceInstanceReplaceBecauseTainted-84]
 	_ = x[ResourceInstanceReplaceByRequest-82]
 	_ = x[ResourceInstanceReplaceBecauseCannotUpdate-70]
+	_ = x[ResourceInstanceDriftDetected-68]
 }
 
 const (
 	_ResourceInstanceChangeActionReason_name_0 = "ResourceInstanceChangeNoReason"
-	_ResourceInstanceChangeActionReason_name_1 = "ResourceInstanceReplaceBecauseCannotUpdate"
-	_ResourceInstanceChangeActionReason_name_2 = "ResourceInstanceReplaceByRequest"
-	_ResourceInstanceChangeActionReason_name_3 = "ResourceInstanceReplaceBecauseTainted"
+	_ResourceInstanceChangeActionReason_name_1 = "ResourceInstanceDriftDetected"
+	_ResourceInstanceChangeActionReason_name_2 = "ResourceInstanceReplaceBecauseCannotUpdate"
+	_ResourceInstanceChangeActionReason_name_3 = "ResourceInstanceReplaceByRequest"
+	_ResourceInstanceChangeActionReason_name_4 = "ResourceInstanceReplaceBecauseTainted"
 )
 
 func (i ResourceInstanceChangeActionReason) String() string {
 	switch {
 	case i == 0:
 		return _ResourceInstanceChangeActionReason_name_0
-	case i == 70:
+	case i == 68:
 		return _ResourceInstanceChangeActionReason_name_1
-	case i == 82:
+	case i == 70:
 		return _ResourceInstanceChangeActionReason_name_2
-	case i == 84:
+	case i == 82:
 		return _ResourceInstanceChangeActionReason_name_3
+	case i == 84:
+		return _ResourceInstanceChangeActionReason_name_4
 	default:
 		return "ResourceInstanceChangeActionReason(" + strconv.FormatInt(int64(i), 10) + ")"
 	}

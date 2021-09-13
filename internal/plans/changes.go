@@ -349,6 +349,9 @@ const (
 	// the ResourceInstanceChange object to give information about specifically
 	// which arguments changed in a non-updatable way.
 	ResourceInstanceReplaceBecauseCannotUpdate ResourceInstanceChangeActionReason = 'F'
+
+	// FIXME
+	ResourceInstanceDriftDetected ResourceInstanceChangeActionReason = 'D'
 )
 
 // OutputChange describes a change to an output value.
