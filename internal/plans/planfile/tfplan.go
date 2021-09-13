@@ -56,6 +56,9 @@ func readTfplan(r io.Reader) (*plans.Plan, error) {
 			Outputs:   []*plans.OutputChangeSrc{},
 			Resources: []*plans.ResourceInstanceChangeSrc{},
 		},
+		DriftChanges: &plans.Changes{
+			Resources: []*plans.ResourceInstanceChangeSrc{},
+		},
 
 		ProviderSHA256s: map[string][]byte{},
 	}
@@ -96,6 +99,16 @@ func readTfplan(r io.Reader) (*plans.Plan, error) {
 		}
 
 		plan.Changes.Resources = append(plan.Changes.Resources, change)
+	}
+
+	for _, rawRC := range rawPlan.ResourceDrift {
+		change, err := resourceChangeFromTfplan(rawRC)
+		if err != nil {
+			// errors from resourceChangeFromTfplan already include context
+			return nil, err
+		}
+
+		plan.DriftChanges.Resources = append(plan.DriftChanges.Resources, change)
 	}
 
 	for _, rawTargetAddr := range rawPlan.TargetAddrs {
@@ -217,6 +230,8 @@ func resourceChangeFromTfplan(rawChange *planproto.ResourceInstanceChange) (*pla
 		ret.ActionReason = plans.ResourceInstanceReplaceBecauseTainted
 	case planproto.ResourceInstanceActionReason_REPLACE_BY_REQUEST:
 		ret.ActionReason = plans.ResourceInstanceReplaceByRequest
+	case planproto.ResourceInstanceActionReason_DRIFT_DETECTED:
+		ret.ActionReason = plans.ResourceInstanceDriftDetected
 	default:
 		return nil, fmt.Errorf("resource has invalid action reason %s", rawChange.ActionReason)
 	}
@@ -342,6 +357,7 @@ func writeTfplan(plan *plans.Plan, w io.Writer) error {
 		Variables:       map[string]*planproto.DynamicValue{},
 		OutputChanges:   []*planproto.OutputChange{},
 		ResourceChanges: []*planproto.ResourceInstanceChange{},
+		ResourceDrift:   []*planproto.ResourceInstanceChange{},
 	}
 
 	switch plan.UIMode {
@@ -386,6 +402,14 @@ func writeTfplan(plan *plans.Plan, w io.Writer) error {
 			return err
 		}
 		rawPlan.ResourceChanges = append(rawPlan.ResourceChanges, rawRC)
+	}
+
+	for _, rc := range plan.DriftChanges.Resources {
+		rawRC, err := resourceChangeToTfplan(rc)
+		if err != nil {
+			return err
+		}
+		rawPlan.ResourceDrift = append(rawPlan.ResourceDrift, rawRC)
 	}
 
 	for _, targetAddr := range plan.TargetAddrs {
@@ -479,6 +503,8 @@ func resourceChangeToTfplan(change *plans.ResourceInstanceChangeSrc) (*planproto
 		ret.ActionReason = planproto.ResourceInstanceActionReason_REPLACE_BECAUSE_TAINTED
 	case plans.ResourceInstanceReplaceByRequest:
 		ret.ActionReason = planproto.ResourceInstanceActionReason_REPLACE_BY_REQUEST
+	case plans.ResourceInstanceDriftDetected:
+		ret.ActionReason = planproto.ResourceInstanceActionReason_DRIFT_DETECTED
 	default:
 		return nil, fmt.Errorf("resource %s has unsupported action reason %s", change.Addr, change.ActionReason)
 	}
