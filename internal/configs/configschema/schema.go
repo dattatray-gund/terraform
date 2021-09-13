@@ -33,6 +33,14 @@ type Block struct {
 	DescriptionKind StringKind
 
 	Deprecated bool
+
+	// Capability is taken from the provider schema Capability field, and can
+	// indicate the expected behavior of the associated resource. This is only
+	// used on the top level Block for an entire resource.
+	// Valid values are:
+	// 0: Default behavior for legacy provider resources.
+	// 1: No SchemaConfigModeAttr blocks are present in this resource.
+	Capability int64
 }
 
 // Attribute represents a configuration attribute, within a block.
